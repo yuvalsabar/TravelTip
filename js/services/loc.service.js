@@ -125,8 +125,8 @@ function getLocCountByUpdatedMap() {
             { today: 0, past: 0, never: 0 }
         );
         locCountByUpdatedMap.total = locs.length;
-		console.log(locCountByUpdatedMap);
-        return locCountByUpdatedMap;
+
+		return locCountByUpdatedMap;
     });
 }
 

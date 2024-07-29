@@ -16,8 +16,20 @@ window.app = {
     onShareLoc,
     onSetSortBy,
     onSetFilterBy,
+	onCloseDialogUpdate,
+	onOpenDialogUpdate,
 }
 
+function onOpenDialogUpdate() {
+	console.log();
+	const dialog = document.getElementById('dialog-update');
+	dialog.showModal();
+}
+
+function onCloseDialogUpdate() {
+	const dialog = document.getElementById('dialog-update');
+	dialog.close();
+}
 
 function onInit() {
     getFilterByFromQueryParams()
@@ -149,12 +161,14 @@ function onPanToUserPos() {
 }
 
 function onUpdateLoc(locId) {
+	onOpenDialogUpdate();
     locService.getById(locId)
         .then(loc => {
-            const rate = prompt('New rate?', loc.rate)
+            //const rate = prompt('New rate?', loc.rate)
             if (rate && rate !== loc.rate) {
                 loc.rate = rate
-                locService.save(loc)
+
+				locService.save(loc)
                     .then(savedLoc => {
                         flashMsg(`Rate was set to: ${savedLoc.rate}`)
                         loadAndRenderLocs()
@@ -165,7 +179,9 @@ function onUpdateLoc(locId) {
                     })
 
             }
-        })
+        }).catch(err => {
+			console.error('OOPs: ' + err);
+		});
 }
 
 function onSelectLoc(locId) {
@@ -269,6 +285,9 @@ function renderLocStats() {
     locService.getLocCountByRateMap().then(stats => {
         handleStats(stats, 'loc-stats-rate')
     })
+	locService.getLocCountByUpdatedMap().then(stats => {
+		handleStats(stats, 'loc-stats-update')
+	})
 }
 
 function handleStats(stats, selector) {
